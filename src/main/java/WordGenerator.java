@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 
 public class WordGenerator {
     public static void main(String[] args) throws Exception {
@@ -25,6 +26,8 @@ public class WordGenerator {
     private static void initDocument(XWPFDocument document) {
         createHeader(document);
         createAppearanceAgreements(document);
+//        createWithoutAgreements(document); //todo
+        createExternalMaterials(document);
     }
 
     private static void createHeader(XWPFDocument document) {
@@ -96,12 +99,81 @@ public class WordGenerator {
         tableRowOne.getCell(0).setText("Nazwisko i imię");
         tableRowOne.addNewTableCell().setText("Obostrzerzenia");
         tableRowOne.addNewTableCell().setText("Uwagi");
-        painHeaderRow(tableRowOne.getTableCells());
+        paintHeaderRows(tableRowOne.getTableCells());
     }
 
-    private static void painHeaderRow(List<XWPFTableCell> tableCells) {
+    private static void paintHeaderRows(List<XWPFTableCell> tableCells) {
         for (XWPFTableCell cell : tableCells) {
             cell.setColor("c9c9c9"); //todo create custom enum
         }
+    }
+
+    private static void createExternalMaterials(XWPFDocument document) {
+        createQuotationRights(document);
+        //todo others
+    }
+
+    private static void createQuotationRights(XWPFDocument document) {
+        XWPFParagraph paragraph = document.createParagraph();
+        addLabel(paragraph, "Materiały zewnętzne - prawo cytatu:");
+
+        XWPFTable table = document.createTable();
+        initTableWidth(table);
+        createQuotationTableRows(table);
+    }
+
+    private static void createQuotationTableRows(XWPFTable table) {
+        initQuotationHeader(table);
+        initQuotationBody(table);
+    }
+
+    private static void initQuotationHeader(XWPFTable table) {
+        XWPFTableRow tableRowOne = table.getRow(0);
+        tableRowOne.getCell(0).setText("Nazwisko i imię");
+        tableRowOne.addNewTableCell().setText("Uwagi");
+        tableRowOne.addNewTableCell().setText("Tytuł");
+        tableRowOne.addNewTableCell().setText("Producent");
+
+        paintHeaderRows(tableRowOne.getTableCells());
+        mergeCell(tableRowOne.getCell(1), BigInteger.valueOf(4));
+        mergeCell(tableRowOne.getCell(2), BigInteger.valueOf(2));
+
+        XWPFTableRow tableRowTwo = table.createRow();
+        tableRowTwo.getCell(0).setText("Reżyser");
+        tableRowTwo.getCell(1).setText("Scenarysta");
+        tableRowTwo.getCell(2).setText("D. produkcji");
+        tableRowTwo.getCell(3).setText("Czas Trwania");
+        tableRowTwo.addNewTableCell().setText("Licencja do");
+        tableRowTwo.addNewTableCell().setText("TC początek");
+        tableRowTwo.addNewTableCell().setText("TC koniec");
+        tableRowTwo.addNewTableCell().setText("Właściciel praw");
+        paintHeaderRows(tableRowTwo.getTableCells());
+    }
+
+    private static void mergeCell(XWPFTableCell cell, BigInteger value) {
+        if (cell.getCTTc().getTcPr() == null) cell.getCTTc().addNewTcPr();
+        if (cell.getCTTc().getTcPr().getGridSpan() == null) cell.getCTTc().getTcPr().addNewGridSpan();
+        cell.getCTTc().getTcPr().getGridSpan().setVal(value);
+    }
+
+    private static void initQuotationBody(XWPFTable table) {
+        XWPFTableRow tableRowOne = table.createRow();
+        tableRowOne.getCell(0).setText("some");
+        tableRowOne.getCell(1).setText("example ");
+        tableRowOne.getCell(2).setText("test");
+        tableRowOne.getCell(3).setText("text");
+
+        mergeCell(tableRowOne.getCell(1), BigInteger.valueOf(4));
+        mergeCell(tableRowOne.getCell(2), BigInteger.valueOf(2));
+
+        XWPFTableRow tableRowTwo = table.createRow();
+        tableRowTwo.getCell(0).setText("class");
+        tableRowTwo.getCell(1).setText("java ");
+        tableRowTwo.getCell(2).setText("idea");
+        tableRowTwo.getCell(3).setText("double");
+        tableRowTwo.addNewTableCell().setText("long");
+        tableRowTwo.addNewTableCell().setText("static");
+        tableRowTwo.addNewTableCell().setText("final");
+        tableRowTwo.addNewTableCell().setText("case");
     }
 }
