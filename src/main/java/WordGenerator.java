@@ -39,7 +39,7 @@ public class WordGenerator {
         addHeaderRun(paragraph, "Numer serii: ", "12");
         addHeaderRun(paragraph, "Autor: ", "Dobry ziomek");
 
-        addBorderBottom(paragraph);
+        paragraph.setBorderBottom(Borders.THICK);
     }
 
     private static void addHeaderRun(XWPFParagraph paragraph, String label, String text) {
@@ -53,15 +53,11 @@ public class WordGenerator {
         paragraphOneRunTwo.addBreak();
     }
 
-    private static void addBorderBottom(XWPFParagraph paragraph) {
-        paragraph.setBorderBottom(Borders.THICK);
-    }
-
     private static void createAppearanceAgreements(XWPFDocument document) {
         XWPFParagraph paragraph = document.createParagraph();
         addLabel(paragraph, "Zgody na wizerunek:");
         createAATable(document);
-        paragraph.setBorderBottom(Borders.THICK);
+        document.createParagraph().setBorderBottom(Borders.THICK);
     }
 
     private static void addLabel(XWPFParagraph paragraph, String label) {
