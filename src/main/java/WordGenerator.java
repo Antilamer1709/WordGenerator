@@ -1,10 +1,7 @@
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
-
-
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
@@ -26,14 +23,11 @@ public class WordGenerator {
     }
 
     private static void initDocument(XWPFDocument document) {
-        initHeader(document);
-        //create table
-        XWPFTable table = document.createTable();
-        initTableWidth(table);
-        createTableRows(table);
+        createHeader(document);
+        createAppearanceAgreements(document);
     }
 
-    private static void initHeader(XWPFDocument document) {
+    private static void createHeader(XWPFDocument document) {
         //create paragraph
         XWPFParagraph paragraph = document.createParagraph();
         paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -60,7 +54,29 @@ public class WordGenerator {
     }
 
     private static void addBorderBottom(XWPFParagraph paragraph) {
-        paragraph.setBorderBottom(Borders.SINGLE);
+        paragraph.setBorderBottom(Borders.THICK);
+    }
+
+    private static void createAppearanceAgreements(XWPFDocument document) {
+        XWPFParagraph paragraph = document.createParagraph();
+        addLabel(paragraph, "Zgody na wizerunek:");
+        createAATable(document);
+        paragraph.setBorderBottom(Borders.THICK);
+    }
+
+    private static void addLabel(XWPFParagraph paragraph, String label) {
+        //create paragraph
+        paragraph.setAlignment(ParagraphAlignment.LEFT);
+        XWPFRun paragraphOneRunOne = paragraph.createRun();
+        paragraphOneRunOne.setBold(true);
+        paragraphOneRunOne.setText(label);
+        paragraphOneRunOne.addBreak();
+    }
+
+    private static void createAATable(XWPFDocument document) {
+        XWPFTable table = document.createTable();
+        initTableWidth(table);
+        createAATableRows(table);
     }
 
     private static void initTableWidth(XWPFTable table) {
@@ -78,23 +94,18 @@ public class WordGenerator {
         pr.setJc(jc);
     }
 
-    private static void createTableRows(XWPFTable table) {
+    private static void createAATableRows(XWPFTable table) {
         //create first row
         XWPFTableRow tableRowOne = table.getRow(0);
-        tableRowOne.getCell(0).setText("col one, row one");
-        tableRowOne.addNewTableCell().setText("col two, row one");
-        tableRowOne.addNewTableCell().setText("col three, row one");
+        tableRowOne.getCell(0).setText("Nazwisko i imię");
+        tableRowOne.addNewTableCell().setText("Obostrzerzenia");
+        tableRowOne.addNewTableCell().setText("Uwagi");
+        painHeaderRow(tableRowOne.getTableCells());
+    }
 
-        //create second row
-        XWPFTableRow tableRowTwo = table.createRow();
-        tableRowTwo.getCell(0).setText("col one, row two");
-        tableRowTwo.getCell(1).setText("col two, row two");
-        tableRowTwo.getCell(2).setText("col three, row two");
-
-        //create third row
-        XWPFTableRow tableRowThree = table.createRow();
-        tableRowThree.getCell(0).setText("col one, row three");
-        tableRowThree.getCell(1).setText("col two, row three");
-        tableRowThree.getCell(2).setText("col three, row three");
+    private static void painHeaderRow(List<XWPFTableCell> tableCells) {
+        for (XWPFTableCell cell : tableCells) {
+            cell.setColor("c9c9c9"); //todo create custom enum
+        }
     }
 }
