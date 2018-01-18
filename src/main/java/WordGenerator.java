@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -104,7 +106,7 @@ public class WordGenerator {
 
     private static void paintHeaderRows(List<XWPFTableCell> tableCells) {
         for (XWPFTableCell cell : tableCells) {
-            cell.setColor("c9c9c9"); //todo create custom enum
+            cell.setColor("d8d8d8"); //todo create custom enum
         }
     }
 
@@ -120,6 +122,7 @@ public class WordGenerator {
         XWPFTable table = document.createTable();
         initTableWidth(table);
         createQuotationTableRows(table);
+        initQTableColumnSize(table);
     }
 
     private static void createQuotationTableRows(XWPFTable table) {
@@ -175,5 +178,20 @@ public class WordGenerator {
         tableRowTwo.addNewTableCell().setText("static");
         tableRowTwo.addNewTableCell().setText("final");
         tableRowTwo.addNewTableCell().setText("case");
+    }
+
+    private static void initQTableColumnSize(XWPFTable table) {
+        setColumnSize(table.getRow(0).getCell(0), 900);
+        setColumnSize(table.getRow(0).getCell(1), 5000);
+        setColumnSize(table.getRow(0).getCell(2), 5000);
+        setColumnSize(table.getRow(0).getCell(3), 1100);
+        setColumnSize(table.getRow(1).getCell(7), 1100);
+    }
+
+    private static void setColumnSize(XWPFTableCell cell, int size) {
+        CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
+        tblWidth.setW(BigInteger.valueOf(size));
+        //STTblWidth.DXA is used to specify width in twentieths of a point.
+        tblWidth.setType(STTblWidth.DXA);
     }
 }
