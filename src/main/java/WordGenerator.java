@@ -168,6 +168,7 @@ public class WordGenerator {
 
         mergeCell(tableRowOne.getCell(1), BigInteger.valueOf(4));
         mergeCell(tableRowOne.getCell(2), BigInteger.valueOf(2));
+        tableRowOne.setHeight(1000);
 
         XWPFTableRow tableRowTwo = table.createRow();
         tableRowTwo.getCell(0).setText("class");
