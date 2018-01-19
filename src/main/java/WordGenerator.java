@@ -9,11 +9,14 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 
 public class WordGenerator {
-    public static void main(String[] args) throws Exception {
-        createDocument();
+    
+    private Object model;
+
+    public WordGenerator(Object model) {
+        this.model = model; // todo implement model
     }
 
-    private static void createDocument() throws Exception {
+    public void createDocument() throws Exception {
         //Blank Document
         XWPFDocument document = new XWPFDocument();
         FileOutputStream out = new FileOutputStream(new File("C:\\Users\\Antilamer\\Documents\\POI\\create_table.docx"));
@@ -25,14 +28,14 @@ public class WordGenerator {
         System.out.println("create_table.docx written successully");
     }
 
-    private static void initDocument(XWPFDocument document) {
+    private void initDocument(XWPFDocument document) {
         createHeader(document);
         createAppearanceAgreements(document);
 //        createWithoutAgreements(document); //todo
         createExternalMaterials(document);
     }
 
-    private static void createHeader(XWPFDocument document) {
+    private void createHeader(XWPFDocument document) {
         //create paragraph
         XWPFParagraph paragraph = document.createParagraph();
         paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -47,7 +50,7 @@ public class WordGenerator {
         paragraph.setBorderBottom(Borders.THICK);
     }
 
-    private static void addHeaderRun(XWPFParagraph paragraph, String label, String text) {
+    private void addHeaderRun(XWPFParagraph paragraph, String label, String text) {
         //Set Bold an Italic
         XWPFRun paragraphOneRunOne = paragraph.createRun();
         paragraphOneRunOne.setBold(true);
@@ -58,14 +61,14 @@ public class WordGenerator {
         paragraphOneRunTwo.addBreak();
     }
 
-    private static void createAppearanceAgreements(XWPFDocument document) {
+    private void createAppearanceAgreements(XWPFDocument document) {
         XWPFParagraph paragraph = document.createParagraph();
         addLabel(paragraph, "Zgody na wizerunek:");
         createAATable(document);
         document.createParagraph().setBorderBottom(Borders.THICK);
     }
 
-    private static void addLabel(XWPFParagraph paragraph, String label) {
+    private void addLabel(XWPFParagraph paragraph, String label) {
         //create paragraph
         paragraph.setAlignment(ParagraphAlignment.LEFT);
         XWPFRun paragraphOneRunOne = paragraph.createRun();
@@ -74,13 +77,13 @@ public class WordGenerator {
         paragraphOneRunOne.addBreak();
     }
 
-    private static void createAATable(XWPFDocument document) {
+    private void createAATable(XWPFDocument document) {
         XWPFTable table = document.createTable();
         initTableWidth(table);
         createAATableRows(table);
     }
 
-    private static void initTableWidth(XWPFTable table) {
+    private void initTableWidth(XWPFTable table) {
         CTTbl ctTable = table.getCTTbl();
         CTTblPr pr = ctTable.getTblPr();
         CTTblWidth tblW = pr.getTblW();
@@ -95,7 +98,7 @@ public class WordGenerator {
         pr.setJc(jc);
     }
 
-    private static void createAATableRows(XWPFTable table) {
+    private void createAATableRows(XWPFTable table) {
         //create first row
         XWPFTableRow tableRowOne = table.getRow(0);
         tableRowOne.getCell(0).setText("Nazwisko i imię");
@@ -104,18 +107,18 @@ public class WordGenerator {
         paintHeaderRows(tableRowOne.getTableCells());
     }
 
-    private static void paintHeaderRows(List<XWPFTableCell> tableCells) {
+    private void paintHeaderRows(List<XWPFTableCell> tableCells) {
         for (XWPFTableCell cell : tableCells) {
             cell.setColor("d8d8d8"); //todo create custom enum
         }
     }
 
-    private static void createExternalMaterials(XWPFDocument document) {
+    private void createExternalMaterials(XWPFDocument document) {
         createQuotationRights(document);
         //todo others
     }
 
-    private static void createQuotationRights(XWPFDocument document) {
+    private void createQuotationRights(XWPFDocument document) {
         XWPFParagraph paragraph = document.createParagraph();
         addLabel(paragraph, "Materiały zewnętzne - prawo cytatu:");
 
@@ -125,12 +128,12 @@ public class WordGenerator {
         initQTableColumnSize(table);
     }
 
-    private static void createQuotationTableRows(XWPFTable table) {
+    private void createQuotationTableRows(XWPFTable table) {
         initQuotationHeader(table);
         initQuotationBody(table);
     }
 
-    private static void initQuotationHeader(XWPFTable table) {
+    private void initQuotationHeader(XWPFTable table) {
         XWPFTableRow tableRowOne = table.getRow(0);
         tableRowOne.getCell(0).setText("Nazwisko i imię");
         tableRowOne.addNewTableCell().setText("Uwagi");
@@ -153,13 +156,13 @@ public class WordGenerator {
         paintHeaderRows(tableRowTwo.getTableCells());
     }
 
-    private static void mergeCell(XWPFTableCell cell, BigInteger value) {
+    private void mergeCell(XWPFTableCell cell, BigInteger value) {
         if (cell.getCTTc().getTcPr() == null) cell.getCTTc().addNewTcPr();
         if (cell.getCTTc().getTcPr().getGridSpan() == null) cell.getCTTc().getTcPr().addNewGridSpan();
         cell.getCTTc().getTcPr().getGridSpan().setVal(value);
     }
 
-    private static void initQuotationBody(XWPFTable table) {
+    private void initQuotationBody(XWPFTable table) {
         XWPFTableRow tableRowOne = table.createRow();
         tableRowOne.getCell(0).setText("some");
         tableRowOne.getCell(1).setText("example ");
@@ -181,7 +184,7 @@ public class WordGenerator {
         tableRowTwo.addNewTableCell().setText("case");
     }
 
-    private static void initQTableColumnSize(XWPFTable table) {
+    private void initQTableColumnSize(XWPFTable table) {
         setColumnSize(table.getRow(0).getCell(0), 900);
         setColumnSize(table.getRow(0).getCell(1), 5000);
         setColumnSize(table.getRow(0).getCell(2), 5000);
@@ -189,7 +192,7 @@ public class WordGenerator {
         setColumnSize(table.getRow(1).getCell(7), 1100);
     }
 
-    private static void setColumnSize(XWPFTableCell cell, int size) {
+    private void setColumnSize(XWPFTableCell cell, int size) {
         CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
         tblWidth.setW(BigInteger.valueOf(size));
         //STTblWidth.DXA is used to specify width in twentieths of a point.
